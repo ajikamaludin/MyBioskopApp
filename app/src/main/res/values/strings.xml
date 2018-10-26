@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MyBiosKopV3</string>
+    <string name="tanggal_tayang">Tanggal Tayang : </string>
+    <string name="detail">Detail</string>
+</resources>
