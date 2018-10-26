@@ -1,6 +1,11 @@
 package ajikamaludin.id.mybioskopv3;
 
+import android.content.Context;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.content.AsyncTaskLoader;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,24 +20,26 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class MovieDataAsync extends AsyncTask<String, Integer, ArrayList<Movie>> {
+public class MovieDataAsync extends AsyncTaskLoader<ArrayList<Movie>> {
 
+    private String URL;
     private String movies = null;
 
+    public MovieDataAsync(Context context, String URL) {
+        super(context);
+        this.URL = URL;
+    }
+
+    @Nullable
     @Override
-    protected ArrayList<Movie> doInBackground(String... strings) {
+    public ArrayList<Movie> loadInBackground() {
         final ArrayList<Movie> list = new ArrayList<>();
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url(strings[0])
+                .url(URL)
                 .build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-            }
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
+        try {
+            Response response = client.newCall(request).execute();
 
                 movies = response.body().string();
                 try{
@@ -42,31 +49,17 @@ public class MovieDataAsync extends AsyncTask<String, Integer, ArrayList<Movie>>
                         JSONObject objMovie = new JSONObject(arrayResults.get(i).toString());
                         String title = objMovie.getString("title");
                         String overview = objMovie.getString("overview");
-                        String releaseDate = objMovie.getString("releaseDate");
+                        String releaseDate = objMovie.getString("release_date");
                         String imgPoster = "http://image.tmdb.org/t/p/w185" + objMovie.getString("poster_path");
                         list.add(new Movie(title, overview, releaseDate, imgPoster));
+                        Log.d("RESPONSE : " ,String.valueOf(list.size()));
                     }
-
                 }catch (JSONException e){
                     e.printStackTrace();
                 }
-            }
-        });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return list;
-    }
-
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-    }
-
-    @Override
-    protected void onPostExecute(ArrayList<Movie> list) {
-        super.onPostExecute(list);
-    }
-
-    @Override
-    protected void onProgressUpdate(Integer... values) {
-        super.onProgressUpdate(values);
     }
 }
