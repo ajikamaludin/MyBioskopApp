@@ -1,7 +1,6 @@
 package ajikamaludin.id.mybioskopv3;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,7 +37,7 @@ public class CardViewMovieAdapter extends RecyclerView.Adapter<CardViewMovieAdap
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CardViewHolder cardViewHolder, int i) {
+    public void onBindViewHolder(CardViewHolder cardViewHolder, int i) {
         Movie m = getMovies().get(i);
 
         Glide.with(context)
@@ -47,7 +46,11 @@ public class CardViewMovieAdapter extends RecyclerView.Adapter<CardViewMovieAdap
                 .into(cardViewHolder.imgPoster);
 
         cardViewHolder.txtTitle.setText(m.getTxtTitle());
-        cardViewHolder.txtOverview.setText(m.getTxtOverview());
+        String overview = m.getTxtOverview();
+        if(overview.length() >= 100){
+            overview = m.getTxtOverview().substring(0, 100) + "... ";
+        }
+        cardViewHolder.txtOverview.setText(overview);
 
         cardViewHolder.btnDetail.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,7 +1,5 @@
 package ajikamaludin.id.mybioskopv3;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +14,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private RecyclerView recyclerView;
     private ArrayList<Movie> list;
 
-    private String URL = "https://api.themoviedb.org/3/movie/now_playing?api_key=67b6380268ec08352e29f665e862f113";
+    private String URL = "https://api.themoviedb.org/3/movie/now_playing?api_key=67b6380268ec08352e29f665e862f113&region=ID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,14 +38,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     @Override
-    public void onLoadFinished(@NonNull Loader<ArrayList<Movie>> loader, ArrayList<Movie> movies) {
+    public void onLoadFinished(Loader<ArrayList<Movie>> loader, ArrayList<Movie> movies) {
         this.list = movies;
-        Log.d("COUNT : ", String.valueOf(movies.size()));
-        showRecyclerCardView();
+        Log.d("LIST : ", String.valueOf(this.list.size()));
+        if(this.list != null){
+            showRecyclerCardView();
+        }else{
+            setContentView(R.layout.activity_detail_movie);
+        }
     }
 
     @Override
-    public void onLoaderReset(@NonNull Loader<ArrayList<Movie>> loader) {
+    public void onLoaderReset(Loader<ArrayList<Movie>> loader) {
         this.list = null;
     }
 }
